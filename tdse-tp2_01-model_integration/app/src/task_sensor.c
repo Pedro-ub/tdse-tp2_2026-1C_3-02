@@ -58,7 +58,7 @@
 /********************** internal data declaration ****************************/
 const task_sensor_cfg_t task_sensor_cfg_list[] = {
 	{ID_BTN_A,  BTN_A_PORT,  BTN_A_PIN,  BTN_A_PRESSED, DEL_BTN_MAX,
-	 EV_SYS_IDLE, EV_SYS_ACTIVE}
+	 EV_SYS_BTN_UP, EV_SYS_BTN_DOWN}
 };
 
 task_sensor_dta_t task_sensor_dta_list[SENSOR_DTA_QTY];
@@ -154,6 +154,7 @@ void task_sensor_statechart(uint32_t index)
 			if (p_task_sensor_dta->tick > DEL_BTN_MIN)
 			{
 				p_task_sensor_dta->tick--;
+				break;
 			}
 
 			else if((p_task_sensor_dta->event == EV_BTN_UP) && (p_task_sensor_dta->tick == DEL_BTN_MIN)){

@@ -103,7 +103,7 @@ void task_system_init(void *parameters)
 		state = ST_SYS_IDLE;
 		p_task_system_dta->state = state;
 
-		event = EV_SYS_IDLE;
+		event = EV_SYS_BTN_UP;
 		p_task_system_dta->event = event;
 
 		b_event = false;
@@ -155,7 +155,7 @@ void task_system_normal_statechart(void)
 	{
 		case ST_SYS_IDLE:
 
-			if ((true == p_task_system_dta->flag) && (EV_SYS_ACTIVE == p_task_system_dta->event))
+			if ((true == p_task_system_dta->flag) && (EV_SYS_BTN_DOWN == p_task_system_dta->event))
 			{
 				p_task_system_dta->flag = false;
 				put_event_task_actuator(EV_LED_ACTIVE, ID_LED_A);
@@ -166,7 +166,7 @@ void task_system_normal_statechart(void)
 
 		case ST_SYS_ACTIVE:
 
-			if ((true == p_task_system_dta->flag) && (EV_SYS_IDLE == p_task_system_dta->event))
+			if ((true == p_task_system_dta->flag) && (EV_SYS_BTN_UP == p_task_system_dta->event))
 			{
 				p_task_system_dta->flag = false;
 				put_event_task_actuator(EV_LED_IDLE, ID_LED_A);
@@ -179,7 +179,7 @@ void task_system_normal_statechart(void)
 
 			p_task_system_dta->tick  = DEL_SYS_MIN;
 			p_task_system_dta->state = ST_SYS_IDLE;
-			p_task_system_dta->event = EV_SYS_IDLE;
+			p_task_system_dta->event = EV_SYS_BTN_DOWN;
 			p_task_system_dta->flag = false;
 
 			break;

@@ -107,7 +107,6 @@ int main(void)
 
   /* Application Init */
   app_init();
-
   /* USER CODE END 2 */
 
   /* Infinite loop */

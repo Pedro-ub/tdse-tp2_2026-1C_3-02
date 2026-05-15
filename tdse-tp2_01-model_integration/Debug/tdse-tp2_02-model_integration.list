@@ -1,5 +1,5 @@
 
-tdse-tp2_01-model_integration.elf:     file format elf32-littlearm
+tdse-tp2_02-model_integration.elf:     file format elf32-littlearm
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
@@ -37,9 +37,9 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  16 .debug_macro  00018790  00000000  00000000  000118f7  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   0000c485  00000000  00000000  0002a087  2**0
+ 17 .debug_line   0000c489  00000000  00000000  0002a087  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    000838de  00000000  00000000  0003650c  2**0
+ 18 .debug_str    000838da  00000000  00000000  00036510  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  19 .comment      00000043  00000000  00000000  000b9dea  2**0
                   CONTENTS, READONLY
@@ -5494,10 +5494,13 @@ void task_sensor_statechart(uint32_t index)
  8002004:	1e5a      	subs	r2, r3, #1
  8002006:	68bb      	ldr	r3, [r7, #8]
  8002008:	601a      	str	r2, [r3, #0]
-				break;
- 800200a:	e060      	b.n	80020ce <task_sensor_statechart+0x156>
 			}
-
+			else if((p_task_sensor_dta->event == EV_BTN_DOWN)&&(p_task_sensor_dta->tick == DEL_BTN_MIN)){
+				put_event_task_system(p_task_sensor_cfg->signal_down);
+				p_task_sensor_dta->state = ST_BTN_DOWN;
+			}
+			break;
+ 800200a:	e05b      	b.n	80020c4 <task_sensor_statechart+0x14c>
 			else if((p_task_sensor_dta->event == EV_BTN_UP) && (p_task_sensor_dta->tick == DEL_BTN_MIN)){
  800200c:	68bb      	ldr	r3, [r7, #8]
  800200e:	795b      	ldrb	r3, [r3, #5]
@@ -5511,11 +5514,6 @@ void task_sensor_statechart(uint32_t index)
  800201c:	68bb      	ldr	r3, [r7, #8]
  800201e:	2200      	movs	r2, #0
  8002020:	711a      	strb	r2, [r3, #4]
-			}
-			else if((p_task_sensor_dta->event == EV_BTN_DOWN)&&(p_task_sensor_dta->tick == DEL_BTN_MIN)){
-				put_event_task_system(p_task_sensor_cfg->signal_down);
-				p_task_sensor_dta->state = ST_BTN_DOWN;
-			}
 			break;
  8002022:	e04f      	b.n	80020c4 <task_sensor_statechart+0x14c>
 			else if((p_task_sensor_dta->event == EV_BTN_DOWN)&&(p_task_sensor_dta->tick == DEL_BTN_MIN)){
@@ -5817,8 +5815,8 @@ void task_system_init(void *parameters)
  800220a:	7bfa      	ldrb	r2, [r7, #15]
  800220c:	711a      	strb	r2, [r3, #4]
 
-		event = EV_SYS_BTN_UP;
- 800220e:	2301      	movs	r3, #1
+		event = EV_SYS_IDLE;
+ 800220e:	2300      	movs	r3, #0
  8002210:	73bb      	strb	r3, [r7, #14]
 		p_task_system_dta->event = event;
  8002212:	693b      	ldr	r3, [r7, #16]
@@ -6012,14 +6010,14 @@ void task_system_normal_statechart(void)
 	{
 		case ST_SYS_IDLE:
 
-			if ((true == p_task_system_dta->flag) && (EV_SYS_BTN_DOWN == p_task_system_dta->event))
+			if ((true == p_task_system_dta->flag) && (EV_SYS_ACTIVE == p_task_system_dta->event))
  8002364:	687b      	ldr	r3, [r7, #4]
  8002366:	799b      	ldrb	r3, [r3, #6]
  8002368:	2b00      	cmp	r3, #0
  800236a:	d02e      	beq.n	80023ca <task_system_normal_statechart+0x9a>
  800236c:	687b      	ldr	r3, [r7, #4]
  800236e:	795b      	ldrb	r3, [r3, #5]
- 8002370:	2b00      	cmp	r3, #0
+ 8002370:	2b01      	cmp	r3, #1
  8002372:	d12a      	bne.n	80023ca <task_system_normal_statechart+0x9a>
 			{
 				p_task_system_dta->flag = false;
@@ -6041,14 +6039,14 @@ void task_system_normal_statechart(void)
 
 		case ST_SYS_ACTIVE:
 
-			if ((true == p_task_system_dta->flag) && (EV_SYS_BTN_UP == p_task_system_dta->event))
+			if ((true == p_task_system_dta->flag) && (EV_SYS_IDLE == p_task_system_dta->event))
  800238a:	687b      	ldr	r3, [r7, #4]
  800238c:	799b      	ldrb	r3, [r3, #6]
  800238e:	2b00      	cmp	r3, #0
  8002390:	d01d      	beq.n	80023ce <task_system_normal_statechart+0x9e>
  8002392:	687b      	ldr	r3, [r7, #4]
  8002394:	795b      	ldrb	r3, [r3, #5]
- 8002396:	2b01      	cmp	r3, #1
+ 8002396:	2b00      	cmp	r3, #0
  8002398:	d119      	bne.n	80023ce <task_system_normal_statechart+0x9e>
 			{
 				p_task_system_dta->flag = false;
@@ -6078,7 +6076,7 @@ void task_system_normal_statechart(void)
  80023b6:	687b      	ldr	r3, [r7, #4]
  80023b8:	2200      	movs	r2, #0
  80023ba:	711a      	strb	r2, [r3, #4]
-			p_task_system_dta->event = EV_SYS_BTN_DOWN;
+			p_task_system_dta->event = EV_SYS_IDLE;
  80023bc:	687b      	ldr	r3, [r7, #4]
  80023be:	2200      	movs	r2, #0
  80023c0:	715a      	strb	r2, [r3, #5]

@@ -4,4 +4,4 @@
 ### Responsable de la entrega:
 | Padrón | Apellidos, Nombres | Fecha | Deadline |
 | 112436 | Labollita, Pedro | :------: | :-------: |
-| XXXXXX | YYYY, ZZZ | | Semana 06 |
+| 110838 | Masini, Marcos | | Semana 06 |
